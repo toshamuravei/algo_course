@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Callable, Dict, Iterable, Optional
+from typing import Callable, Dict, Iterable, List, Optional
 
 from texttable import Texttable
 
@@ -20,11 +20,11 @@ class NoTestResultsError(RunnerError):
 
 class TestRunner:
 
-    def __init__(self, dir_name=TEST_DATA_DIR_NAME):
+    def __init__(self, dir_name=TEST_DATA_DIR_NAME, test_case_cls=TestCase):
         self.data_dir = dir_name
         # TODO: validate if there are needed dir & it's not empty
         # self.validate_data_existance()
-        self.test_case_class = TestCase
+        self.test_case_class = test_case_cls
         self.test_case_collection = self.build_test_case_collection()
         self.full_run_results = None
 
@@ -76,6 +76,19 @@ class TestRunner:
 
         self.full_run_results = test_results
         return test_results
+
+    def run_competitive(
+            self,
+            callable_list: List[Callable],
+            func_args: Optional[Iterable]=None,
+            func_kwargs: Optional[Dict]=None
+    ) -> Dict:
+
+        competetive_results = {}
+        for func in callable_list:
+            competetive_results[func.__name__] = self.run_tests(func, func_args, func_kwargs)
+
+        return competetive_results
 
     def format_result(self, result: Dict) -> Dict:
         result_dict = {
