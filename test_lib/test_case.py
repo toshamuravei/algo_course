@@ -38,6 +38,7 @@ class TestCase:
     def _run_test(self, testing_func: Callable, args: Iterable, kwargs: Dict) -> Dict:
         args = (self.in_data, *args)
         real_result = testing_func(*args, **kwargs)
+        import pudb; pu.db()
         test_status = str(real_result) == self.out_data
         test_result = {
             "test_name": self.name,
@@ -72,3 +73,29 @@ class TestCase:
     def run(self, testing_func: Callable, func_args: Iterable, func_kwargs: Dict) -> Dict:
         return self._gather_metrics(testing_func, func_args, func_kwargs)
 
+
+class MultiResultTestCase(TestCase):
+
+    def __init__(self, name: str, in_file: str, out_file: str):
+        self.name = name
+        self.in_data = self.read_file_plain(in_file)
+        self.out_data = self.read_multiline_file(out_file)
+
+    def read_multiline_file(self, filename):
+        f = open(filename, "r")
+        lines = f.readlines()
+        if lines:
+            return (lines[0].strip(), lines[1].strip())
+        else:
+            raise ReadFileError(f"File named {filename} is empty or does not contain two lines!")
+
+    def _run_test(self, testing_func: Callable, args: Iterable, kwargs: Dict) -> Dict:
+        args = (self.in_data, *args)
+        real_result = testing_func(*args, **kwargs)
+        test_status = real_result == self.out_data
+        test_result = {
+            "test_name": self.name,
+            "is_passed": "PASSED" if test_status else "FAILED",
+            "details": self._get_test_run_details(real_result, test_status)
+        }
+        return test_result
