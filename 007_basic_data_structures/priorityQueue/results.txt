@@ -1,0 +1,9 @@
+node value: 12 | node priority: 999
+node value: 42 | node priority: 2
+node value: 3 | node priority: 1
+node value: 1 | node priority: 1
+
+
+node value: 42 | node priority: 2
+node value: 3 | node priority: 1
+node value: 1 | node priority: 1
