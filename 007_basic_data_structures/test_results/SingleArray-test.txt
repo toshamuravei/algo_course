@@ -1,0 +1,17 @@
+
+
+ Testing SingleArray on 1000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.000005, 0.000001, 0.000005, 0.000001, 0.000001, 0.000001, 0.000001
+
+ Testing SingleArray on 10000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.000035, 0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 0.000001
+
+ Testing SingleArray on 100000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.000356, 0.000001, 0.000005, 0.000003, 0.000002, 0.000001, 0.000001
+
+ Testing SingleArray on 1000000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.004130, 0.000001, 0.000093, 0.000049, 0.000034, 0.000058, 0.000002

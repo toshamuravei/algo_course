@@ -1,0 +1,21 @@
+
+
+ Testing VectorArray on 1000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.000034, 0.000002, 0.000020, 0.000003, 0.000007, 0.000004, 0.000003
+
+ Testing VectorArray on 10000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.000107, 0.000003, 0.000003, 0.000003, 0.000004, 0.000003, 0.000003
+
+ Testing VectorArray on 100000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.000476, 0.000000, 0.000005, 0.000003, 0.000002, 0.000001, 0.000001
+
+ Testing VectorArray on 1000000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.004632, 0.000001, 0.000063, 0.000040, 0.000018, 0.000041, 0.000001
+
+ Testing VectorArray on 10000000
+Add last, Remove last, Insert at 0, Remove at 0, Insert at rnd, Remove at rnd, Get rnd
+0.062408, 0.000001, 0.001009, 0.000863, 0.000706, 0.000717, 0.000002
