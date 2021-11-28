@@ -95,12 +95,7 @@ int main(void) {
   int i;
   int tests[5] = {1000, 10000, 100000, 1000000, 10000000};
 
-  //init array
   for (i = 0; i < 5; i++) {
     initAndRun(tests[i]);
   }
-  // begining tests
-  // 1. add
-  // TODO: investigate why on large chunk length corruption top size is got
-
 }
