@@ -25,7 +25,6 @@ def idx_to_board_position(idx: str) -> int:
 
 
 def king_walk(position):
-    # check left upper corner: king_walk(72057594037927936)
     position = idx_to_board_position(position)
 
     up_down = position >> 8 | position << 8

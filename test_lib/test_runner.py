@@ -7,8 +7,11 @@ from texttable import Texttable
 from .test_case import TestCase
 
 
-
+TEST_CASE_INDEX_CHAR_POS = 5
+TEST_CASE_IDX_SHIFT = 2
+TEST_CASE_MIN_FILENAME_LENGTH = 5
 TEST_DATA_DIR_NAME = 'test_data/'
+RUN_UNTIL_BIG_INT = 9999
 
 
 class RunnerError(Exception):
@@ -20,13 +23,26 @@ class NoTestResultsError(RunnerError):
 
 class TestRunner:
 
-    def __init__(self, dir_name=TEST_DATA_DIR_NAME, test_case_cls=TestCase):
+    def __init__(self, dir_name=TEST_DATA_DIR_NAME, test_case_cls=TestCase, run_until=None):
         self.data_dir = dir_name
-        # TODO: validate if there are needed dir & it's not empty
-        # self.validate_data_existance()
+        if run_until:
+            self.run_until = self.get_test_case_index(run_until)
+        else:
+            self.run_until = RUN_UNTIL_BIG_INT
         self.test_case_class = test_case_cls
         self.test_case_collection = self.build_test_case_collection()
         self.full_run_results = None
+
+    def get_test_case_index(self, test_case_filename):
+        assert isinstance(test_case_filename, str) == True
+        assert len(test_case_filename) > TEST_CASE_MIN_FILENAME_LENGTH
+
+        idx_pos = TEST_CASE_INDEX_CHAR_POS
+
+        if test_case_filename[idx_pos + 1].isnumeric():
+            return int(test_case_filename[idx_pos:idx_pos+TEST_CASE_IDX_SHIFT])
+        else:
+            return int(test_case_filename[idx_pos])
 
     def build_test_case_collection(self):
         test_collection = []
@@ -45,11 +61,19 @@ class TestRunner:
 
     def gather_tmp_test_data(self) -> dict:
         is_test_file = lambda x: x if (x.endswith(".in") or x.endswith(".out")) else False
+        is_small_enough = lambda x: self.get_test_case_index(x) <= self.run_until
         test_names = filter(lambda x: is_test_file(x), os.listdir(self.data_dir))
+        test_names = filter(lambda x: is_small_enough(x), test_names)
         test_names = list(set(map(lambda x: x[:-3] if x.endswith(".in") else x[:-4], test_names)))
         tmp_collection = {test_name: {} for test_name in test_names}
 
         for filename in os.listdir(self.data_dir):
+            # skip too heavy tests
+            if is_test_file(filename) and self.run_until:
+                test_case_index = self.get_test_case_index(filename)
+                if test_case_index > self.run_until:
+                    continue
+
             if filename.endswith(".in"):
                 test_name = filename[:-3]
                 tmp_collection[test_name]["in"] = filename
@@ -88,6 +112,7 @@ class TestRunner:
         for func in callable_list:
             competetive_results[func.__name__] = self.run_tests(func, func_args, func_kwargs)
 
+        self.full_run_results = competetive_results
         return competetive_results
 
     def format_result(self, result: Dict) -> Dict:
@@ -138,6 +163,37 @@ class TestRunner:
                 test_res["details"]
             ]
             rows_to_add.append(res_list)
+
+        table.add_rows(rows_to_add)
+
+        return table.draw()
+
+    def render_ascii_competitive_results(self) -> str:
+        self.check_for_empty_results()
+
+        table = Texttable()
+        table.set_cols_align(("c", "c", "c", "c", "c"))
+        table.set_cols_valign(("m", "m", "m", "m", "m"))
+        table.set_cols_dtype(["t", "t", "f", "f", "t"])
+        table.set_precision(6)
+
+        rows_to_add = []
+        for k, v in self.full_run_results.items():
+            test_func_header = [" ", " ", k, " ", " "]
+            test_results_header = ["Test Name", "Status", "Executed in (sec)", "Memory used (Mb)", "Details"]
+            rows_to_add.append(test_func_header)
+            rows_to_add.append(test_results_header)
+
+            for res in v:
+                test_res = res.get("result")
+                res_list = [
+                    test_res["test_name"],
+                    test_res["is_passed"],
+                    test_res["execution_time"],
+                    test_res["rude_mem_usage"],
+                    test_res["details"]
+                ]
+                rows_to_add.append(res_list)
 
         table.add_rows(rows_to_add)
 
