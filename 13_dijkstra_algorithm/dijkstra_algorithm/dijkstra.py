@@ -1,7 +1,10 @@
-from queue import PriorityQueue
 from typing import List, Tuple
 
+from primitive_queue.queue import PrimitivePriorityQueue
+
+
 LARGE_INT = 999999
+
 
 def _get_neighbours_and_weights(vertex, adjacency_list, edges):
     neighbours = adjacency_list[vertex]
@@ -24,12 +27,11 @@ def dijkstra_algorithm(
     weighted_paths = [None for x in adjacency_list]
     weighted_paths[START_VERTEX] = 0
 
-    queue_list = [(START_VERTEX, 0)]
-    p_queue = PriorityQueue()
-    p_queue.put((0, START_VERTEX))
+    p_queue = PrimitivePriorityQueue()
+    p_queue.enqueue(0, START_VERTEX)
 
     while not p_queue.empty():
-        current_distance, current_vertex = p_queue.get()
+        current_vertex = p_queue.dequeue()
         visited_vertecies.append(current_vertex)
 
         neighbours_and_weights = _get_neighbours_and_weights(
@@ -42,7 +44,7 @@ def dijkstra_algorithm(
                 current_cost = weighted_paths[neighbour] or LARGE_INT
                 new_cost = weighted_paths[current_vertex] + weight
                 if new_cost < current_cost:
-                    p_queue.put((new_cost, neighbour))
+                    p_queue.enqueue(new_cost, neighbour)
                     weighted_paths[neighbour] = new_cost
 
     return weighted_paths
