@@ -21,8 +21,13 @@ def _pattern_text_answer():
 
 
 @pytest.fixture
-def pattern_text_answer():
+def _pattern_text_answer():
         return "abcde", "12nnfabcd,..fabc0rjq42abcdeasfabcde", [22, 30]
+
+
+@pytest.fixture
+def pattern_text_answer():
+        return "lolkek", "lolkek-cheburek-lolkek", [0, 16]
 
 
 def test_naive_search(pattern_text_answer):
